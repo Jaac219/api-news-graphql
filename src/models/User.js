@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const schema = new Schema({
-  user_name: {
+  userName: {
     type: String,
     require: true,
     unique: true
@@ -13,12 +13,13 @@ const schema = new Schema({
   phone: {
     type: String
   },
-  adress: {
+  address: {
     type: Object
   },
   isRemove: {
-    type: Boolean
+    type: Boolean,
+    default: false
   }
 });
 
-export default model("user", schema);
+export default model('user', schema);

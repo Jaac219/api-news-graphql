@@ -18,7 +18,11 @@ const schema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'New',
     require: true
+  },
+  isRemove: {
+    type: Boolean,
+    default: false
   }
 });
 
-export default model('commentaire', schema);
+export default model('comment', schema);

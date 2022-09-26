@@ -20,7 +20,8 @@ const schema = new Schema({
     require: true
   },
   isRemove: {
-    type: Boolean
+    type: Boolean,
+    default: false
   }
 });
 
