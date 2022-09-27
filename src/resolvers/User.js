@@ -48,11 +48,31 @@ const User_Create = async(_, {userInput})=>{
   }
 }
 
+const User_Update = async (_, {userInput}) =>{
+  try {
+    await user.findByIdAndUpdate(userInput._id, {$set: userInput}, {new: true})
+    return userInput._id;
+  } catch (error) {
+    return error;
+  }
+}
+
+const User_Delete = async(_, {_id}) =>{
+  try {
+    await user.findByIdAndUpdate(_id, {$set: {isRemove: true}});
+    return true;
+  } catch (error) {
+    return error;
+  }
+}
+
+
 export default {
   Query:{
     User_Get
   },
   Mutation:{
-    User_Save
+    User_Save,
+    User_Delete
   }
 }

@@ -22,6 +22,7 @@ const userSchema = [`
 
   type Mutation{
     User_Save(userInput: User_Input):ID
+    User_Delete(_id: String!):Boolean
   }
 
   input User_Filter{
