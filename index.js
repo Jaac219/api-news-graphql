@@ -6,9 +6,9 @@ import { ApolloServer } from 'apollo-server-express';
 const PORT = process.env.PORT || 4000;
 const app = express();
 
-
 import typeDefs from './src/merge/mergeSchemas.js';
 import resolvers from './src/merge/mergeResolvers.js';
+
 
 app.get('/', (req, res, next) => {
   res.send('Welcome');

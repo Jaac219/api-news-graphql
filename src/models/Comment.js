@@ -1,6 +1,9 @@
 import { Schema, model } from 'mongoose';
 
 const schema = new Schema({
+  _id: {
+    type: String
+  },
   date: {
     type: Date.now,
     default: true
@@ -23,6 +26,8 @@ const schema = new Schema({
     type: Boolean,
     default: false
   }
+},{
+  _id: false
 });
 
 export default model('comment', schema);

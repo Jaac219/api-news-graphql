@@ -1,6 +1,9 @@
 import { Schema, model } from 'mongoose';
 
 const schema = new Schema({
+  _id: {
+    type: String
+  },
   title: {
     type: String, 
     require: true,
@@ -15,7 +18,7 @@ const schema = new Schema({
     default: Date.now
   },
   userId: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     require: true
   },
@@ -23,6 +26,8 @@ const schema = new Schema({
     type: Boolean,
     default: false
   }
+},{
+  _id: false
 });
 
-export default model("new", schema);
+export default model("notice", schema);

@@ -17,7 +17,6 @@ const userSchema = [`
   type Query {
     User_Get(filter: User_Filter, option: Option):[User]
     User_Count(filter: User_Filter):Int
-    User_Address: [User_Address]
   }
 
   type Mutation{
