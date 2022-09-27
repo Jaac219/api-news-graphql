@@ -1,16 +1,27 @@
 const userSchema = [`
   type User {
+    _id: String!,
     userName: String!,
     name: String!,
     phone: String,
-    address: Address,
+    address: User_Address,
     isRemove: Boolean
   }
 
-  type Address {
+  type User_Address {
     city: String,
     street: String,
     number: Int
+  }
+
+  type Query {
+    User_Get(filter: User_Filter, option: Option):[User]
+    User_Count(filter: User_Filter):Int
+    User_Address: [User_Address]
+  }
+
+  type Mutation{
+    User_Save(userInput: User_Input):ID
   }
 
   input User_Filter{
@@ -18,16 +29,27 @@ const userSchema = [`
     userName: String,
     name: String,
     phone: String,
-    address: Adress
+    address: Address_Input
   }
 
-
-
-  type Query {
-    User_Get(filter: User_Filter, option: Option):[User]
+  input User_Input{
+    _id: String,
+    userName: String,
+    name: String,
+    phone: String,
+    address: Address_Input
   }
 
-  type Mutation{
+  input Address_Input{
+    city: String,
+    street: String,
+    number: Int
+  }
 
+  input Option {
+    skip: Int
+    limit: Int
   }
 `]
+
+export default userSchema;

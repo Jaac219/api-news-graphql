@@ -1,6 +1,9 @@
 import { Schema, model } from 'mongoose';
 
 const schema = new Schema({
+  _id: {
+    type: String
+  },
   userName: {
     type: String,
     require: true,
@@ -20,6 +23,8 @@ const schema = new Schema({
     type: Boolean,
     default: false
   }
+},{
+  _id: false
 });
 
 export default model('user', schema);
