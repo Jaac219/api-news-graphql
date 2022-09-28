@@ -5,6 +5,7 @@ const userSchema = [`
     name: String!,
     phone: String,
     address: User_Address,
+    notice: [Notice],
     isRemove: Boolean
   }
 
@@ -52,4 +53,4 @@ const userSchema = [`
   }
 `]
 
-export default userSchema;
+module.exports =  userSchema;

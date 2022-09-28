@@ -5,7 +5,7 @@ const NoticeSchema = [`
     body: String!,
     date: GraphQLDateTime,
     userId: String!,
-    user: [User],
+    user: User,
     isRemove: Boolean
   }
 
@@ -40,5 +40,4 @@ const NoticeSchema = [`
     limit: Int
   }
 `]
-
-export default NoticeSchema
+module.exports = NoticeSchema

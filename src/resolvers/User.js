@@ -1,7 +1,5 @@
-import user from '../models/User.js';
-
-import  pkg from '@codecraftkit/utils';
-const { generateId, handlePagination } = pkg;
+const user =  require('../models/User.js');
+const { generateId, handlePagination } = require('@codecraftkit/utils')
 
 const User_Get = async(_, {filter = {}, option = {}}) =>{
   try {
@@ -17,13 +15,25 @@ const User_Get = async(_, {filter = {}, option = {}}) =>{
     if(address && address.city) query = {...query, 'address.city': { $regex: address.city, $options: 'i' }}
     if(address && address.street) query = {...query, 'address.street': { $regex: address.street, $options: 'i' }}
     if(address && address.number) query = {...query, 'address.number': address.number}
-    let find = user.find(query);
+    
+    
+    let find = await user.aggregate([
+      {
+        $lookup:{
+          from: "notices",
+          localField: "_id",
+          foreignField: "userId",
+          as: "notice"
+        }
+      },
+      // { "$unwind": "$notice" },
+      { "$match":  query}
+    ]);
     
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
     
-    return await find.lean();
-    
+    return find;
   } catch (error) {
     return error;
   }
@@ -67,7 +77,7 @@ const User_Delete = async(_, {_id}) =>{
 }
 
 
-export default {
+module.exports = {
   Query:{
     User_Get
   },

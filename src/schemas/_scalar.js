@@ -1,9 +1,8 @@
-import pkg from 'graphql-iso-date';
-const { GraphQLDateTime } = pkg;
+const { GraphQLDateTime } = require('graphql-iso-date')
 
 const Scalar = [`
     scalar GraphQLDateTime,
     scalar JSONObject
 `]
 
-export default Scalar;
+module.exports = Scalar;

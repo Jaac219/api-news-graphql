@@ -1,26 +1,39 @@
-import notice from '../models/Notice.js';
-import user from '../models/User.js';
+const notice =  require('../models/Notice.js');
 
-import  pkg from '@codecraftkit/utils';
-const { generateId, handlePagination } = pkg;
+const { generateId, handlePagination } = require('@codecraftkit/utils');
 
 const Notice_Get = async (_, {filter = {}, option = {}}) => {
   try {
+    let { _id, title, body, date, userId } = filter;
     let { skip, limit } = handlePagination(option);
-    let { _id, title, body, date, userId, user } = filter;
 
     let query = {isRemove: false}
-
     if(_id) query._id = _id;
     if(title) query.title = {$regex: title, $options: 'i'}
     if(body) query.body = {$regex: body, $options: 'i'}
     if(date) query.date = {$regex: date, $options: 'i'}
     if(userId) query.userId = userId
 
-    let find = await notice.find(query);
-    /// Utilizar el agregate de mongoose para traer todo de un solo tiron
+    let find = await notice.aggregate([
+      {
+        $lookup:{
+          from: "users",
+          localField: "userId",
+          foreignField: "_id",
+          as: "user"
+        }
+      },
+      { "$match": query }
+    ]);
 
-    return find
+    if(skip) find.skip(skip)  
+    if(limit) find.limit(limit)
+
+    for (let i in find){
+      find[i].user = find[i].user[0];
+    }
+
+    return find;
   } catch (error) {
     return error;
   }
@@ -63,7 +76,7 @@ const Notice_Delete = async (_, _id)=>{
   }
 }
 
-export default {
+module.exports = {
   Query: {
     Notice_Get
   },

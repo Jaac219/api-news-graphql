@@ -1,14 +1,13 @@
-import './src/db.js';
-import express from 'express';
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { ApolloServer } from 'apollo-server-express';
+require('./src/db.js');
+const express = require('express');
+const { makeExecutableSchema } = require('@graphql-tools/schema');
+const { ApolloServer } = require('apollo-server-express')
 
 const PORT = process.env.PORT || 4000;
 const app = express();
 
-import typeDefs from './src/merge/mergeSchemas.js';
-import resolvers from './src/merge/mergeResolvers.js';
-
+const typeDefs = require('./src/merge/mergeSchemas.js');
+const resolvers = require('./src/merge/mergeResolvers.js');
 
 app.get('/', (req, res, next) => {
   res.send('Welcome');

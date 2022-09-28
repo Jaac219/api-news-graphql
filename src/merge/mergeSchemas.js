@@ -1,10 +1,6 @@
-import { mergeTypeDefs } from "@graphql-tools/merge";
-import { loadFiles } from "@graphql-tools/load-files";
-import { fileURLToPath } from "url";
-import path, { dirname } from 'path';
+const { mergeTypeDefs } = require("@graphql-tools/merge");
+const { loadFilesSync } = require("@graphql-tools/load-files");
+const path = require('path');
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const typesArray = await loadFiles(path.join(__dirname, '..', 'schemas'), {extensions: ['js']});
-
-export default mergeTypeDefs(typesArray);
+const typesArray = loadFilesSync(path.join(__dirname, '..', 'schemas'), {extensions: ['js']});
+module.exports = mergeTypeDefs(typesArray);

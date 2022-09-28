@@ -1,11 +1,11 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const schema = new Schema({
   _id: {
     type: String
   },
   date: {
-    type: Date.now,
+    type: Date,
     default: true
   },
   body: {
@@ -13,13 +13,13 @@ const schema = new Schema({
     require: true
   },
   userId: {
-    type: Schema.Types.ObjectId,
+    type: String,
     ref: 'User',
     require: true
   },
-  newId: {
-    type: Schema.Types.ObjectId,
-    ref: 'New',
+  noticeId: {
+    type: String,
+    ref: 'Notice',
     require: true
   },
   isRemove: {
@@ -30,4 +30,4 @@ const schema = new Schema({
   _id: false
 });
 
-export default model('comment', schema);
+module.exports = model('comment', schema);
