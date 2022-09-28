@@ -24,11 +24,37 @@ const Comment_Get = async (_, {filter = {}, option = {}}) => {
         }
       },
       {
+        $unwind:{
+          path:"$user",
+          preserveNullAndEmptyArrays:true
+        }
+      },
+      {
         $lookup: {
           from: "notices",
           localField: "noticeId",
           foreignField: "_id",
+          pipeline: [{
+            $lookup:{
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user"
+            }
+          },
+          {
+            $unwind:{
+              path:"$user",
+              preserveNullAndEmptyArrays:true
+            }
+          }],
           as: "notice"
+        }
+      },
+      {
+        $unwind:{
+          path:"$notice",
+          preserveNullAndEmptyArrays:true
         }
       },
       { "$match": query }
@@ -37,13 +63,10 @@ const Comment_Get = async (_, {filter = {}, option = {}}) => {
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
 
-    console.log(JSON.stringify(find));
-
-    for (let i in find){
-      find[i].user = find[i].user[0];
-      find[i].notice = find[i].notice[0];
-    }
-
+    // for (let i in find){
+    //   find[i].user = find[i].user[0];
+    //   find[i].notice = find[i].notice[0];
+    // }
 
     return find;
   } catch (error) {

@@ -15,6 +15,7 @@ const Notice_Get = async (_, {filter = {}, option = {}}) => {
     if(userId) query.userId = userId
 
     let find = await notice.aggregate([
+      { $match: query},
       {
         $lookup:{
           from: "users",
@@ -23,16 +24,47 @@ const Notice_Get = async (_, {filter = {}, option = {}}) => {
           as: "user"
         }
       },
-      { "$match": query }
+      {
+        $unwind:{
+          path:"$user",
+          preserveNullAndEmptyArrays:true
+        }
+      },
+      {
+        $lookup:{
+          from: "comments",
+          localField: "_id",
+          foreignField: "noticeId",
+          pipeline: [{
+            $lookup:{
+              from: "users",
+              localField: "userId",
+              foreignField: "_id",
+              as: "user"
+            }
+          },
+          {
+            $unwind:{
+              path:"$user",
+              preserveNullAndEmptyArrays:true
+            }
+          }],
+          as: "comment"
+        }
+      }
     ]);
+
+    console.log(JSON.stringify(find))
 
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
 
-    for (let i in find){
-      find[i].user = find[i].user[0];
-    }
+    // for (let i in find){
+    //   find[i].user = find[i].user[0];
+    //   // find[i].comment = find[i].comment[0];
+    // }
 
+ 
     return find;
   } catch (error) {
     return error;

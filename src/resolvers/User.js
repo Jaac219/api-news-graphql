@@ -23,12 +23,36 @@ const User_Get = async(_, {filter = {}, option = {}}) =>{
           from: "notices",
           localField: "_id",
           foreignField: "userId",
+          pipeline: [
+            {
+              $lookup:{
+                from: "comments",
+                localField: "_id",
+                foreignField: "noticeId",
+                pipeline: [{
+                  $lookup:{
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "user"
+                  }
+                },
+                {
+                  $unwind:{
+                    path:"$user",
+                    preserveNullAndEmptyArrays:true
+                  }
+                }],
+                as: "comment"
+              }
+            }
+          ],
           as: "notice"
         }
-      },
-      // { "$unwind": "$notice" },
-      { "$match":  query}
+      }
     ]);
+
+    console.log(JSON.stringify(find))
     
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)

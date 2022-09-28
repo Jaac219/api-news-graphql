@@ -6,6 +6,7 @@ const NoticeSchema = [`
     date: GraphQLDateTime,
     userId: String!,
     user: User,
+    comment: [Comment],
     isRemove: Boolean
   }
 
