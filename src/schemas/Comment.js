@@ -34,11 +34,6 @@ const commentSchema = [`
     userId: String,
     noticeId: String
   }
-
-  input Option {
-    skip: Int
-    limit: Int
-  }
 `]
 
 module.exports =  commentSchema;

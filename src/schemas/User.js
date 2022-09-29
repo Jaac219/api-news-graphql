@@ -46,11 +46,6 @@ const userSchema = [`
     street: String,
     number: Int
   }
-
-  input Option {
-    skip: Int
-    limit: Int
-  }
 `]
 
 module.exports =  userSchema;

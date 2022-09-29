@@ -1,4 +1,6 @@
 const comment =  require('../models/Comment.js');
+const notice =  require('../models/Notice.js');
+const user =  require('../models/User.js');
 
 const { generateId, handlePagination } = require('@codecraftkit/utils');
 
@@ -10,65 +12,16 @@ const Comment_Get = async (_, {filter = {}, option = {}}) => {
     let query = {isRemove: false}
     if(_id) query._id = _id;
     if(body) query.body = {$regex: body, $options: 'i'}
-    if(date) query.date = {$regex: date, $options: 'i'}
+    if(date) query.date = new Date(date);
     if(userId) query.userId = userId
     if(noticeId) query.noticeId = noticeId
 
-    let find = await comment.aggregate([
-      {
-        $lookup: {
-          from: "users",
-          localField: "userId",
-          foreignField: "_id",
-          as: "user"
-        }
-      },
-      {
-        $unwind:{
-          path:"$user",
-          preserveNullAndEmptyArrays:true
-        }
-      },
-      {
-        $lookup: {
-          from: "notices",
-          localField: "noticeId",
-          foreignField: "_id",
-          pipeline: [{
-            $lookup:{
-              from: "users",
-              localField: "userId",
-              foreignField: "_id",
-              as: "user"
-            }
-          },
-          {
-            $unwind:{
-              path:"$user",
-              preserveNullAndEmptyArrays:true
-            }
-          }],
-          as: "notice"
-        }
-      },
-      {
-        $unwind:{
-          path:"$notice",
-          preserveNullAndEmptyArrays:true
-        }
-      },
-      { "$match": query }
-    ]);
+    let find = comment.find(query);
 
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
 
-    // for (let i in find){
-    //   find[i].user = find[i].user[0];
-    //   find[i].notice = find[i].notice[0];
-    // }
-
-    return find;
+    return await find.exec();
   } catch (error) {
     return error;
   }
@@ -116,7 +69,15 @@ module.exports = {
     Comment_Get
   },
   Mutation:{
-    Comment_Save,
+    Comment_Save, 
     Comment_Delete
+  },
+  Comment: {
+    user: async(root, args)=>{
+      return await user.findById(root.userId)
+    },
+    notice: async(root, args)=>{
+      return await notice.findById(root.noticeId)
+    }
   }
 }

@@ -1,11 +1,12 @@
 const user =  require('../models/User.js');
+const notice =  require('../models/Notice.js');
+
 const { generateId, handlePagination } = require('@codecraftkit/utils')
 
 const User_Get = async(_, {filter = {}, option = {}}) =>{
   try {
+    let { skip, limit } = handlePagination(option);
     let { _id, userName, name, phone, address } = filter;
-    
-    const { skip, limit } = handlePagination(option);
     
     let query = {isRemove: false}
     if(_id) query.id = _id;
@@ -16,48 +17,11 @@ const User_Get = async(_, {filter = {}, option = {}}) =>{
     if(address && address.street) query = {...query, 'address.street': { $regex: address.street, $options: 'i' }}
     if(address && address.number) query = {...query, 'address.number': address.number}
     
-    
-    let find = await user.aggregate([
-      {
-        $lookup:{
-          from: "notices",
-          localField: "_id",
-          foreignField: "userId",
-          pipeline: [
-            {
-              $lookup:{
-                from: "comments",
-                localField: "_id",
-                foreignField: "noticeId",
-                pipeline: [{
-                  $lookup:{
-                    from: "users",
-                    localField: "userId",
-                    foreignField: "_id",
-                    as: "user"
-                  }
-                },
-                {
-                  $unwind:{
-                    path:"$user",
-                    preserveNullAndEmptyArrays:true
-                  }
-                }],
-                as: "comment"
-              }
-            }
-          ],
-          as: "notice"
-        }
-      }
-    ]);
-
-    console.log(JSON.stringify(find))
-    
+    let find = user.find(query);
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
     
-    return find;
+    return await find.exec();
   } catch (error) {
     return error;
   }
@@ -100,13 +64,38 @@ const User_Delete = async(_, {_id}) =>{
   }
 }
 
+const User_Count = async(_, {filter = {}}) =>{
+  try {
+    let { _id, userName, name, phone, address } = filter;
+      
+    let query = {isRemove: false}
+    if(_id) query.id = _id;
+    if(userName) query.userName = { $regex: userName, $options: 'i' }
+    if(name) query.name = { $regex: name, $options: 'i' }
+    if(phone) query.phone = phone
+    if(address && address.city) query = {...query, 'address.city': { $regex: address.city, $options: 'i' }}
+    if(address && address.street) query = {...query, 'address.street': { $regex: address.street, $options: 'i' }}
+    if(address && address.number) query = {...query, 'address.number': address.number}    
+    
+    return await user.countDocuments(query);
+  } catch (error) {
+    return error
+  }
+
+}
 
 module.exports = {
   Query:{
-    User_Get
+    User_Get,
+    User_Count
   },
   Mutation:{
     User_Save,
     User_Delete
+  },
+  User: {
+    notice: async(root, args) => {
+      return await notice.find({userId: root._id})
+    }
   }
 }

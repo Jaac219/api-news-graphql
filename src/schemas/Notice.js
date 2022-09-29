@@ -35,10 +35,5 @@ const NoticeSchema = [`
     date: GraphQLDateTime,
     userId: String
   }
-
-  input option {
-    skip: Int,
-    limit: Int
-  }
 `]
 module.exports = NoticeSchema

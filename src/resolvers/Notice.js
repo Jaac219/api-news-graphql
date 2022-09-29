@@ -1,4 +1,6 @@
 const notice =  require('../models/Notice.js');
+const user =  require('../models/User.js');
+const comment =  require('../models/Comment.js');
 
 const { generateId, handlePagination } = require('@codecraftkit/utils');
 
@@ -11,61 +13,14 @@ const Notice_Get = async (_, {filter = {}, option = {}}) => {
     if(_id) query._id = _id;
     if(title) query.title = {$regex: title, $options: 'i'}
     if(body) query.body = {$regex: body, $options: 'i'}
-    if(date) query.date = {$regex: date, $options: 'i'}
+    if(date) query.date = new Date(date);
     if(userId) query.userId = userId
 
-    let find = await notice.aggregate([
-      { $match: query},
-      {
-        $lookup:{
-          from: "users",
-          localField: "userId",
-          foreignField: "_id",
-          as: "user"
-        }
-      },
-      {
-        $unwind:{
-          path:"$user",
-          preserveNullAndEmptyArrays:true
-        }
-      },
-      {
-        $lookup:{
-          from: "comments",
-          localField: "_id",
-          foreignField: "noticeId",
-          pipeline: [{
-            $lookup:{
-              from: "users",
-              localField: "userId",
-              foreignField: "_id",
-              as: "user"
-            }
-          },
-          {
-            $unwind:{
-              path:"$user",
-              preserveNullAndEmptyArrays:true
-            }
-          }],
-          as: "comment"
-        }
-      }
-    ]);
-
-    console.log(JSON.stringify(find))
-
+    let find = notice.find(query);
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
-
-    // for (let i in find){
-    //   find[i].user = find[i].user[0];
-    //   // find[i].comment = find[i].comment[0];
-    // }
-
  
-    return find;
+    return await find.exec();
   } catch (error) {
     return error;
   }
@@ -115,5 +70,13 @@ module.exports = {
   Mutation:{
     Notice_Save,
     Notice_Delete
+  },
+  Notice: {
+    user: async(root, args) =>{
+      return await user.findById(root.userId);
+    },
+    comment: async(root, args)=>{
+      return await comment.find({noticeId: root._id});
+    }
   }
 }
