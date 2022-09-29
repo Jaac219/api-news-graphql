@@ -1,6 +1,6 @@
 const { connect } = require('mongoose');
 
-const db = process.env.MONGODB_URI || `mongodb://localhost:27017/practice`;
+const db = process.env.MONGODB_URI;
 
 connect(db).then(()=>{
   console.log('connected to MongoDB');

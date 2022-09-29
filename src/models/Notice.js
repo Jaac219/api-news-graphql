@@ -1,5 +1,7 @@
 const { Schema, model } =  require('mongoose');
 
+const collectionName = "notice";
+
 const schema = new Schema({
   _id: {
     type: String
@@ -27,7 +29,8 @@ const schema = new Schema({
     default: false
   }
 },{
+  collection: collectionName,
   _id: false
 });
 
-module.exports = model("notice", schema);
+module.exports = model(collectionName, schema);

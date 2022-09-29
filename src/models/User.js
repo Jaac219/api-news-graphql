@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose');
 
+const collectionName = "user";
+
 const schema = new Schema({
   _id: {
     type: String
@@ -24,7 +26,8 @@ const schema = new Schema({
     default: false
   }
 },{
+  collection: collectionName,
   _id: false
 });
 
-module.exports = model('user', schema);
+module.exports = model(collectionName, schema);

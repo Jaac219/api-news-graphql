@@ -17,6 +17,7 @@ const Notice_Get = async (_, {filter = {}, option = {}}) => {
     if(userId) query.userId = userId
 
     let find = notice.find(query);
+    
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
  

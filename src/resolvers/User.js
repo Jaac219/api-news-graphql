@@ -18,6 +18,7 @@ const User_Get = async(_, {filter = {}, option = {}}) =>{
     if(address && address.number) query = {...query, 'address.number': address.number}
     
     let find = user.find(query);
+    
     if(skip) find.skip(skip)  
     if(limit) find.limit(limit)
     
