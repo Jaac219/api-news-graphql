@@ -73,11 +73,11 @@ module.exports = {
     Comment_Delete
   },
   Comment: {
-    user: async(root, args)=>{
-      return await user.findById(root.userId)
+    user: async(parent, args)=>{
+      return await user.findById(parent.userId)
     },
-    notice: async(root, args)=>{
-      return await notice.findById(root.noticeId)
+    notice: async(parent, args)=>{
+      return await notice.findById(parent.noticeId)
     }
   }
 }

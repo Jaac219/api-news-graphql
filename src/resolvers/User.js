@@ -95,8 +95,8 @@ module.exports = {
     User_Delete
   },
   User: {
-    notice: async(root, args) => {
-      return await notice.find({userId: root._id})
+    notice: async(parent, args) => {
+      return await notice.find({userId: parent._id})
     }
   }
 }

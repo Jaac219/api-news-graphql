@@ -73,11 +73,11 @@ module.exports = {
     Notice_Delete
   },
   Notice: {
-    user: async(root, args) =>{
-      return await user.findById(root.userId);
+    user: async(parent, args) =>{
+      return await user.findById(parent.userId);
     },
-    comment: async(root, args)=>{
-      return await comment.find({noticeId: root._id});
+    comment: async(parent, args)=>{
+      return await comment.find({noticeId: parent._id});
     }
   }
 }
